@@ -1,10 +1,7 @@
 package com.bitrix24.webhook.service;
 
-import com.bitrix24.webhook.entity.MainEntity;
-import com.bitrix24.webhook.entity.OwnResponseEntity;
-
-import java.util.List;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface MainService {
-    OwnResponseEntity findAll();
+    String findAll() throws JsonProcessingException;
 }
