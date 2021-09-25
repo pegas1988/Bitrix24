@@ -11,28 +11,28 @@ import javax.persistence.Entity;
 @Builder
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MainEntity {
 
-    private Long userId;
-    private Long workflowId;
-    private String documentName;
     @JsonProperty("DESCRIPTION")
     private String description;
     @JsonProperty("ACTIVITY")
     private String activity;
     @JsonProperty("NAME")
     private String name;
+    @JsonProperty("ID")
+    private Long id;
 
     @JsonCreator
     MainEntity(@JsonProperty("DESCRIPTION") String description,
                @JsonProperty("ACTIVITY") String activity,
-               @JsonProperty("NAME") String name) {
+               @JsonProperty("NAME") String name,
+               @JsonProperty("ID") Long id) {
         this.description = description;
         this.activity = activity;
         this.name = name;
+        this.id = id;
     }
 
     @Override
@@ -41,6 +41,7 @@ public class MainEntity {
                 "description='" + description + '\'' +
                 ", activity='" + activity + '\'' +
                 ", name='" + name + '\'' +
+                ", id=" + id +
                 '}';
     }
 }
