@@ -42,7 +42,7 @@ public class MainController {
     @PostMapping(value = "/statements", produces = MediaType.APPLICATION_JSON_VALUE)
     public ModelAndView statements(@RequestBody String id, Model model, MainServiceImpl mainService) throws JsonProcessingException {
         String[] arrayId = id.split("=");
-        mainService.changeStatusToAccept(arrayId[1]);
+        mainService.changeStatusToAcceptOrCancel(arrayId[1]);
         model.addAttribute("list", mainService.deserialization(mainService.findAll()));
         return new ModelAndView("statements");
     }

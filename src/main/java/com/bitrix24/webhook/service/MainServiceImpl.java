@@ -23,10 +23,10 @@ public class MainServiceImpl implements MainService {
 
         OrderEntityForRequest order = new OrderEntityForRequest("DESC");
 
-        String[] array = new String[2];
-        array[0] = "ApproveActivity";
-        array[1] = "RpaApproveActivity";
-        FilterEntityForRequest filter = new FilterEntityForRequest((long) 1, array, 0);
+        String[] activityTypeArray = new String[2];
+        activityTypeArray[0] = "ApproveActivity";
+        activityTypeArray[1] = "RpaApproveActivity";
+        FilterEntityForRequest filter = new FilterEntityForRequest((long) 1, activityTypeArray, 0);
 
         String[] propertiesArray = new String[10];
         propertiesArray[0] = "user_id";
@@ -41,7 +41,6 @@ public class MainServiceImpl implements MainService {
         propertiesArray[9] = "PARAMETERS";
 
         RequestEntity requestEntity = new RequestEntity(propertiesArray, order, filter);
-
         HttpHeaders headers = new HttpHeaders();
 
         headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -63,11 +62,12 @@ public class MainServiceImpl implements MainService {
         return list;
     }
 
-    public void changeStatusToAccept(String id) {
+    public void changeStatusToAcceptOrCancel(String id) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         String [] neededId = id.split("&");
         String mainString;
+
         if (id.contains("Accept")) {
             mainString = "https://b24-pc5i7x.bitrix24.ua/rest/1/k4hubf7q73t9e21i/bizproc.task.complete?TASK_ID=" + neededId[0] + "&STATUS=1";
         }
