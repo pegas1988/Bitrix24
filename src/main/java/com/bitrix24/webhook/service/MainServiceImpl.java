@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+
 import java.util.List;
 
 @Service
@@ -26,6 +27,7 @@ public class MainServiceImpl implements MainService {
         String[] activityTypeArray = new String[2];
         activityTypeArray[0] = "ApproveActivity";
         activityTypeArray[1] = "RpaApproveActivity";
+
         FilterEntityForRequest filter = new FilterEntityForRequest((long) 1, activityTypeArray, 0);
 
         String[] propertiesArray = new String[10];
@@ -65,17 +67,54 @@ public class MainServiceImpl implements MainService {
     public void changeStatusToAcceptOrCancel(String id) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        String [] neededId = id.split("&");
+        String[] neededId = id.split("&");
         String mainString;
 
         if (id.contains("Accept")) {
             mainString = "https://b24-pc5i7x.bitrix24.ua/rest/1/k4hubf7q73t9e21i/bizproc.task.complete?TASK_ID=" + neededId[0] + "&STATUS=1";
-        }
-        else {
+        } else {
             mainString = "https://b24-pc5i7x.bitrix24.ua/rest/1/k4hubf7q73t9e21i/bizproc.task.complete?TASK_ID=" + neededId[0] + "&STATUS=2";
         }
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
         restTemplate.postForEntity(mainString, entity, String.class);
+    }
+
+    public OwnResponseEntity findOne(String id) throws JsonProcessingException {
+
+        String [] neededId = id.split("&");
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        OrderEntityForRequest order = new OrderEntityForRequest("DESC");
+
+        OrderEntityForRequest classId = new OrderEntityForRequest(id);
+
+        String[] activityTypeArray = new String[2];
+        activityTypeArray[0] = "ApproveActivity";
+        activityTypeArray[1] = "RpaApproveActivity";
+        FilterForOne filterOne = new FilterForOne((long) 1, neededId[0], activityTypeArray, 0);
+
+        String[] propertiesArray = new String[10];
+        propertiesArray[2] = "ID";
+        propertiesArray[3] = "WORKFLOW_ID";
+        propertiesArray[4] = "DOCUMENT_NAME";
+        propertiesArray[5] = "DESCRIPTION";
+        propertiesArray[6] = "NAME";
+
+        RequestEntityOne requestEntity = new RequestEntityOne(propertiesArray, order, filterOne);
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setContentLength(512);
+
+        ResponseEntity<String> quote = restTemplate.postForEntity(
+                "https://b24-pc5i7x.bitrix24.ua/rest/1/k4hubf7q73t9e21i/bizproc.task.list", requestEntity, String.class, headers);
+        String body = quote.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        assert body != null;
+        return objectMapper.readValue(body, OwnResponseEntity.class);
     }
 }

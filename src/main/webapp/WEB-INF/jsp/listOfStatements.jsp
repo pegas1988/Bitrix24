@@ -30,31 +30,19 @@
                 <thead>
                 <tr>
                     <th scope="col">Название</th>
-                    <th scope="col">Описание</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr>
-                    <c:forEach items="${entity}" var="task">
+                    <c:forEach items="${list}" var="task">
                 <tr>
-                    <td><c:out value="${task.documentName}"/></td>
-                    <td><c:out value="${task.description}"/></td>
+                    <td><c:out value="${task.name}"/></td>
                     <td>
                         <form method="post">
                             <div class="d-grid gap-2">
                                 <input type="hidden" name="id" value="${task.id}">
                                 <button name="Accept" type="Submit" class="btn btn-secondary">
-                                    Принять
-                                </button>
-                            </div>
-                        </form>
-                    </td>
-                    <td>
-                        <form method="post">
-                            <div class="d-grid gap-2">
-                                <input type="hidden" name="id" value="${task.id}">
-                                <button name="Cancel" type="Submit" class="btn btn-secondary">
-                                    Отклонить
+                                    Детальнее
                                 </button>
                             </div>
                         </form>

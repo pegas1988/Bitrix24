@@ -3,7 +3,10 @@ package com.bitrix24.webhook.entity;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 
@@ -15,6 +18,8 @@ import javax.persistence.Entity;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MainEntity {
 
+    @JsonProperty("DOCUMENT_NAME")
+    private String documentName;
     @JsonProperty("DESCRIPTION")
     private String description;
     @JsonProperty("ACTIVITY")
@@ -25,10 +30,12 @@ public class MainEntity {
     private Long id;
 
     @JsonCreator
-    MainEntity(@JsonProperty("DESCRIPTION") String description,
+    MainEntity(@JsonProperty("DOCUMENT_NAME") String documentName,
+               @JsonProperty("DESCRIPTION") String description,
                @JsonProperty("ACTIVITY") String activity,
                @JsonProperty("NAME") String name,
                @JsonProperty("ID") Long id) {
+        this.documentName = documentName;
         this.description = description;
         this.activity = activity;
         this.name = name;

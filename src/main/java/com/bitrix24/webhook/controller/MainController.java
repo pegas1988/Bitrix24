@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/")
@@ -27,9 +26,24 @@ public class MainController {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'BOSS')")
     @GetMapping(value = "/statements")
-    public ModelAndView statements(Model model, MainServiceImpl mainService) throws JsonProcessingException {
-        model.addAttribute("list", mainService.deserialization(mainService.findAll()));
+    public ModelAndView statementsGet(Model model, MainServiceImpl mainService) throws JsonProcessingException {
+        model.addAttribute("entity", mainService.deserialization(mainService.findOne(getId())));
         return new ModelAndView("statements");
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'BOSS')")
+    @GetMapping(value = "/list-of-statements")
+    public ModelAndView listOfStatements(Model model, MainServiceImpl mainService) throws JsonProcessingException {
+        model.addAttribute("list", mainService.deserialization(mainService.findAll()));
+        return new ModelAndView("listOfStatements");
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'BOSS')")
+    @PostMapping(value = "/list-of-statements", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ModelAndView listOfStatements(@RequestBody String id) {
+        String[] arrayId = id.split("=");
+        setId(arrayId[1]);
+        return new ModelAndView("redirect:/statements");
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'BOSS')")
@@ -44,6 +58,16 @@ public class MainController {
         String[] arrayId = id.split("=");
         mainService.changeStatusToAcceptOrCancel(arrayId[1]);
         model.addAttribute("list", mainService.deserialization(mainService.findAll()));
-        return new ModelAndView("statements");
+        return new ModelAndView("redirect:/list-of-statements");
+    }
+
+    private String resultId;
+
+    public void setId(String id) {
+        resultId = id;
+    }
+
+    public String getId() {
+        return resultId;
     }
 }
